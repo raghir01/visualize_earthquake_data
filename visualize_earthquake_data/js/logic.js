@@ -32,7 +32,7 @@ function createMap(response) {
   var overlayMaps = {
   };
 
-  // Create our map, giving it the satellite and earthquakes layers to display on load
+  // Create our map, giving it the satellite layers to display on load
   var myMap = L.map("map-id", {
     center: [
       37.09, -95.71
@@ -49,9 +49,10 @@ function createMap(response) {
   }).addTo(myMap);
 
   var features = response.features;
-  var colors = ['#A8FFC0','#F7D438','#FFAC4F','#FF7032','#DB4C25','#B51E1E']
+  // set the different colors for different magnitudes
+   var colors = ['#A8FFC0','#F7D438','#FFAC4F','#FF7032','#DB4C25','#B51E1E']
 
-
+/// Loop through the geojson data and create markers for varying earthquake magnitudes
     for (var i = 0; i < features.length; i++) {
           var feature = features[i];
           var loc = feature.geometry.coordinates;
@@ -72,10 +73,10 @@ function createMap(response) {
           }
           var cir = L.circleMarker([loc[1], loc[0]], {
                 fillOpacity: .6,
-                color: "greenF",
+                color: "teal",
                 fillColor: col,
                 weight: 1,
-                radius: magnitude * 3
+                radius: magnitude * 5
           }).addTo(myMap);
 
     }
@@ -86,24 +87,21 @@ var legend = L.control({position: 'bottomright'});
 legend.onAdd = function (myMap) {
 
     var div = L.DomUtil.create('div', 'info legend'),
-
-        grades = [0,1,2,3,4,5];
-        div.innerHTML = '<h3>Quake Magnitude</h3>'
+       grades = [0,1,2,3,4,5];
     // loop through our intervals and generate a label with a colored square for each interval
     for (var i = 0; i < grades.length; i++) {
       div.innerHTML +=
-          '<i class="legend" style="background:' + colors[i] + '; color:' + colors[i] + ';">....</i> ' +
-          grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '++');
+          '<i class="legend" style="background:' + colors[i] + '; color:' + colors[i] + ';">..</i> ' +
+          grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
   }
   return div;
 };
-
 legend.addTo(myMap);
 
 
 }
 
 
-// Perform an API call to the last 7 days earthquake data. Call createMarkers when complete
+// Perform an API call to the last 7 days of earthquake data. Call createMap when complete
 d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson", createMap);
 
