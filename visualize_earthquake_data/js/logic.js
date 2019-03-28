@@ -57,6 +57,7 @@ function createMap(response) {
           var feature = features[i];
           var loc = feature.geometry.coordinates;
           var magnitude = feature.properties.mag;
+          var place = feature.properties.place;
           var depth = feature.geometry.coordinates[2];
           if (magnitude < 1){
             col = colors[0]
@@ -78,6 +79,7 @@ function createMap(response) {
                 weight: 1,
                 radius: magnitude * 5
           }).addTo(myMap);
+          cir.bindPopup("Place: " + place + "<br>Magnitude: " +magnitude)
 
     }
 
